@@ -1,4 +1,4 @@
-public class academicDetails {
+public class AcademicDetails {
     // fields
     private String level;
     private String program;
@@ -7,7 +7,7 @@ public class academicDetails {
     private int catalogYear;
 
     // constructor
-    public academicDetails(String level, String program, String division, String major, int catalogYear){
+    public AcademicDetails(String level, String program, String division, String major, int catalogYear){
         this.level = level;
         this.program = program;
         this.division = division;
