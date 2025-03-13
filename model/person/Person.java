@@ -12,6 +12,7 @@ public abstract class Person {
     private final LocalDate dateOfBirth;
 
     protected Person(int id, String fullName, String address, String phone, String email, LocalDate dateOfBirth) {
+        validateDateOfBirth(dateOfBirth);
         this.id = id;
         this.fullName = fullName;
         this.address = address;
@@ -21,9 +22,20 @@ public abstract class Person {
     }
 
     protected Person(int id, String fullName, LocalDate dateOfBirth) {
+        validateDateOfBirth(dateOfBirth);
         this.id = id;
         this.fullName = fullName;
         this.dateOfBirth = dateOfBirth;
+    }
+
+    // Validation method
+    private void validateDateOfBirth(LocalDate dateOfBirth) {
+        if (dateOfBirth == null) {
+            throw new IllegalArgumentException("Date of birth cannot be null.");
+        }
+        if (dateOfBirth.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("Date of birth cannot be in the future.");
+        }
     }
 
     // Getters
@@ -33,11 +45,19 @@ public abstract class Person {
     public String getPhone() { return phone; }
     public String getEmail() { return email; }
     public LocalDate getDateOfBirth() { return dateOfBirth; }
+
     public int getAge() {
+        if (dateOfBirth == null) {
+            throw new IllegalStateException("Date of birth is not set.");
+        }
         LocalDate today = LocalDate.now();
-        Period period = Period.between(this.dateOfBirth, today);
-        return period.getYears();
+        int age = Period.between(this.dateOfBirth, today).getYears();
+        if (age < 0) {
+            throw new IllegalStateException("Calculated age cannot be negative.");
+        }
+        return age;
     }
+
     // Setters
     public void setAddress(String address) { this.address = address; }
     public void setPhone(String phone) { this.phone = phone; }
@@ -46,22 +66,20 @@ public abstract class Person {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Person)) return false; // for subclasses
+        if (!(o instanceof Person)) return false;
         Person person = (Person) o;
-        return id == person.id; // id is unique
+        return id == person.id;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Person{");
-        sb.append("id=").append(id);
-        sb.append(", fullName='").append(fullName).append("'");
-        sb.append(", address='").append(address).append("'");
-        sb.append(", phone='").append(phone).append("'");
-        sb.append(", email='").append(email).append("'");
-        sb.append(", dateOfBirth=").append(dateOfBirth);
-        sb.append("}");
-        return sb.toString();
+        return "Person{" +
+                "id=" + id +
+                ", fullName='" + fullName + '\'' +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                '}';
     }
-}    
+}
